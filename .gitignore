@@ -1,0 +1,11 @@
+/x64
+/Release
+/ipch
+/xlualib -*
+/*.swp
+/*.*~
+/*.sdf
+/*.opensdf
+/*.rar
+/IDB
+/TXDataAnalyzer

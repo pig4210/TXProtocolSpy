@@ -1,0 +1,423 @@
+
+
+-------- -------- -------- --------
+                TXProtocol
+-------- -------- -------- --------
+
+
+
+●
+    TXP;                                --所有的TXProtocol数据、函数都处于此表
+
+
+
+-------- -------- -------- --------
+            txline操作
+-------- -------- -------- --------
+
+
+
+●
+    txline    txline:new                ( );  --txline继承xline操作，只是修改成默认大端
+
+
+
+    string    txline:get_key            ( );  --获取一组TxKey
+    string    txline:set_rand_key       ( );  --设置一组随机的TxKey
+
+
+
+    txline.gk       = txline.get_key;
+    txline.srk      = txline.set_rand_key;
+
+
+
+-------- -------- -------- --------
+                txspyline操作
+-------- -------- -------- --------
+
+
+
+●
+    txspyline txspyline:new             ( );  --txspyline继承txline操作，添加level项
+
+
+
+    txspyline txspyline:level_increase  ( );  --增加输出层次
+    txspyline txspyline:level_decrease  ( );  --减少输出层次
+
+
+
+    string    txspyline:print_blanks    ( );  --根据输出层次，' '*levle*6
+    string    txspyline:print_names     ( );  --输出格式化名字，前置空格
+
+
+
+    --根据名字，提取并输出一个格式化的类型，同时返回值
+    string, v txspyline:print_get_byte  ( name );
+    string, v txspyline:print_get_word  ( name );
+    string, v txspyline:print_get_dword ( name );
+
+
+
+    string    txspyline:print_head      ( int size ); --输出一个格式化的head
+
+
+
+    stirng, string txspyline:print_hexs ( string name, int size );
+        --提取并输出一个hexs, 同时返回hexs串
+    string, string txspyline:print_head_hexs( string name );
+        --提取并输出一个带头的hexs, 同时返回hexs串
+
+
+
+    string, string txspyline:print_head_ascii( string name );
+        --输出ASCII"..."，同时返回字符串
+    string, string txspyline:print_head_utf8( string name );
+        --输出UTF8"..."，同时返回转换后的字符串
+
+
+
+    string    txspyline:print_ip        ( string name );
+        --输出IP数值、IP格式，同时返回IP数值
+    string    txspyline:print_time      ( string name );
+        --输出时间数值、时间格式，同时返回时间数值
+    string    txspyline:print_key       ( string name );
+        --输出KEY，同时返回KEY串
+    string    txspyline:print_head_line_only_head( string name );
+        --读取带头的数据，但只输出头格式，同时返回数据
+    string    txspyline:print_remain    ( string name );
+        --以hex2show输出剩余数据
+    string    txspyline:print_tlv       ( TXData td );
+        --输出TLV格式
+        --查询TXP.TLVSpy是否存在目标TLV脚本，如果存在，则调用脚本解析，不存在，则默认输出
+
+
+
+    txspyline.inc     = txspyline.level_increase;
+    txspyline.dec     = txspyline.level_decrease;
+    txspyline.pk      = txspyline.print_blanks;
+    txspyline.pn      = txspyline.print_names;
+    txspyline.pb      = txspyline.print_get_byte;
+    txspyline.pw      = txspyline.print_get_word;
+    txspyline.pd      = txspyline.print_get_dword;
+    txspyline.ph      = txspyline.print_head;
+    txspyline.phs     = txspyline.print_hexs;
+    txspyline.phhs    = txspyline.print_head_hexs;
+    txspyline.pha     = txspyline.print_head_ascii;
+    txspyline.ph8     = txspyline.print_head_utf8;
+    txspyline.pip     = txspyline.print_ip;
+    txspyline.ptm     = txspyline.print_time;
+    txspyline.pkey    = txspyline.print_key;
+    txspyline.phloh   = txspyline.print_head_line_only_head;
+    txspyline.pr      = txspyline.print_remain;
+    txspyline.ptlv    = txspyline.print_tlv;
+
+
+
+-------- -------- -------- --------
+              TXData
+-------- -------- -------- --------
+
+    TXP.Data;                           --TXProtocol的数据环境
+        --所有与配置不同的数据请在new后自行更改
+
+
+
+    TXProtocol的数据环境有以下必要配置信息，允许预设定，但必须有值
+      cMainVer                          --QQ主版本号
+      cSubVer                           --QQ次版本号
+      dwClientType                      --客户端类型
+      dwPubNo                           --发行版本号
+      wSubVer                           --子版本号
+      dwSSOVersion                      --SSO版本号
+      dwServiceId
+      dwClientVer                       --客户端版本号
+      cPingType                         --Ping类型
+
+      QdPreFix                          --QdData前缀
+      QdSufFix                          --QdData后缀
+      bufQdKey                          --QdData Key
+      dwQdVerion                        --这是QQProtect.exe或dll的"产品版本"
+      cQdProtocolVer                    --QdData版本号
+      wQdCsCmdNo                        --QdData指令号
+      cQdCcSubNo                        --QdData次指令号
+      cOsType                           --系统类型
+      bIsWOW64                          --是否x64
+      dwDrvVersionInfo                  --驱动版本信息
+      bufVersion_TSSafeEdit_dat         --TSSafeEdit.dat的"文件版本"
+      bufVersion_QScanEngine_dll        --QScanEngine.dll的"文件版本"
+      bufQQMd5                          --QQ.exe的md5
+
+
+
+    TXData    TXP.Data:new              ( string account, string password );
+        --给定账号密码，新建数据环境
+        --account默认0
+        --password默认空串
+
+    新的数据环境会有如下新的数据项
+      dwUin                             --帐号数值
+      bufPsMD5                          --密码md5
+      bufPsSaltMD5                      --密码与帐号的md5
+    以下配置信息需要即时计算或提取，但也允许使用固定值
+      dwLocaleID                        --本地信息，中国大陆
+      wTimeZoneoffsetMin                --时区差值，中国大陆
+      bRememberPwdLogin                 --是否记住登陆
+      bufDHPublicKey                    --本地通讯公钥
+      bufDHShareKey                     --本地通讯私钥
+      tlv0114subver                     --ECDH Key版本号
+      dwISP
+      dwIDC
+    伪造计算机信息，使用账号附加数据的MD5，基于账号的固定值
+      bufComputerName
+      bufComputerID
+      bufComputerIDEx
+      bufMacGuid
+      bufMachineInfoGuid
+    以下信息是环境必要数据，建议不要修改
+      RedirectIP                        --重定向IP组
+      Key                               --加解密KEY组
+      wCsIOSeq                          --通讯序号
+
+
+
+    TXData    TXP.Data:new_net(
+        string    account,              --默认0
+        string    password,             --默认空串
+        string    ip,                   --连接IP地址，若为空，自行从TXP.Servers拉取一个地址
+        string    port,                 --连接IP端口
+        boolean   udp_or_tcp,           --指定通讯使用UDP或TCP，默认UDP
+        int       timeout               --通讯超时，以ms计，默认5000ms
+        );
+
+    新的数据环境继承于TXP.Data:new
+    新的数据环境有以下额外数据项
+      istcp                             --是否使用TCP通讯
+      link                              --通讯socket
+      dwServerIP                        --通讯目标IP
+      wServerPort                       --通讯目标端口
+
+
+
+    TXP.Servers                         --TX默认通讯IP数据库
+
+
+
+-------- -------- -------- --------
+           TX Packet
+-------- -------- -------- --------
+
+    TXP.PacketName                      --数据包名
+    TXP.PacketBuilder                   --数据包构建函数组
+    TXP.PacketAnalyzer                  --数据包解析函数组
+    TXP.PacketResultName                --数据包对应结果命名组
+    TXP.PacketSendSpy                   --发包解析函数组
+    TXP.PacketRecvSpy                   --收包解析函数组
+
+    TXP.Packet_PreFix                   --数据包前缀 "\x02"
+    TXP.Packet_SufFix                   --数据包后缀 "\x03"
+    TXP.TEAN_Key_Size                   --TEAN Key大小 0x10
+
+
+
+    string    TXP.CreateKeyName         ( int cscmd, int csseq );
+        --指定指令号、指令序号，生成"%04X-%04X"这样的字符串
+
+
+
+    stirng    TXP.CreateSpyKeyName      ( int cscmd, int csseq );
+        --指定指令号、指令序号，生成"Spy%04X-%04X"这样的字符串
+
+
+
+    string    TXP.PacketBuilderFix      ( TXData td, string data );
+        --指定数据环境，已经组织好的封包
+          前缀添加Packet_PreFix、cMainVer、cSubVer
+          后缀添加Packet_SufFix
+          若使用tcp模式通讯，自动添加数据头
+          data允许为string或txline
+
+
+
+    bool      TXP.IsTXPacket            ( TXData data | string data );
+        --检测指定封包是否TXProtocol封包，data允许为string或txline
+
+
+
+    string    TXP.PacketAnalyzerFix            ( TXData data | string data );
+        --检测指定封包是否TXProtocol封包，如果是，返回去除前后缀的数据
+          data允许为string或txline
+
+
+
+    string, string TXP.PacketSpy(
+        TXData  td,
+        string  ip,
+        string  data,
+        bool    send_or_recv
+        );
+      --指定数据环境，IP信息，封包，发送或接收，格式化封包
+      --返回简要信息、详细封包格式化信息
+
+
+
+    string    TXP.CreatePsMD5           ( string password )
+        --指定密码字符串，返回md5
+
+    string    TXP.CreatePsSaltMD5       ( string uin | int uin, string psmd5 )
+        --指定帐号、密码md5，生成passaltmd5
+
+
+
+-------- -------- -------- --------
+            0825 Ping包
+-------- -------- -------- --------
+
+
+
+    string    TXP.PacketBuilder[0x0825] ( TXData td );
+        --指定数据环境，生成0825 Send数据封包
+
+
+
+    TXP.PacketResultName[0x0825]        --0825封包返回结果对应说明数组
+
+
+
+    string    TXP.PacketAnalyzer[0x0825]( TXData td, string data | txline data );
+        --指定数据环境，Recv封包，解析之
+
+
+
+    string    TXP.PacketSendSpy[0x0825] ( TXData td, txspyline data );
+        --指定数据环境，Send封包(去头去尾，txspyline)，解析之
+
+
+
+    string    TXP.PacketRecvSpy[0x0825] ( TXData td, txspyline data );
+        --指定数据环境，Recv封包(去头去尾，txspyline)，解析之
+
+
+
+-------- -------- -------- --------
+          0836 CheckTGTGT包
+-------- -------- -------- --------
+
+
+
+    string    TXP.PacketBuilder[0x0836] ( TXData td );
+        --指定数据环境，生成0836 Send数据封包
+
+
+
+    TXP.PacketResultName[0x0836]        --0836封包返回结果对应说明数组
+
+
+
+    string    TXP.PacketAnalyzer[0x0836]( TXData td, string data | txline data );
+        --指定数据环境，Recv封包，解析之
+
+
+
+    string    TXP.PacketSendSpy[0x0836]( TXData td, txspyline data );
+        --指定数据环境，Send封包(去头去尾，txspyline)，解析之
+
+
+
+    string    TXP.PacketRecvSpy[0x0836] ( TXData td, txspyline data );
+        --指定数据环境，Recv封包(去头去尾，txspyline)，解析之
+
+
+
+-------- -------- -------- --------
+         0828 PreLogin包
+-------- -------- -------- --------
+
+
+
+    string    TXP.PacketBuilder[0x0828] ( TXData td );
+        --指定数据环境，生成0828 Send数据封包
+
+
+
+    TXP.PacketResultName[0x0828]        --0828封包返回结果对应说明数组
+
+
+
+    string    TXP.PacketAnalyzer[0x0828]( TXData td, string data | txline data );
+        --指定数据环境，Recv封包，解析之
+
+
+
+    string    TXP.PacketSendSpy[0x0828] ( TXData td, txspyline data );
+        --指定数据环境，Send封包(去头去尾，txspyline)，解析之
+
+
+
+    string    TXP.PacketRecvSpy[0x0828] ( TXData td, txspyline data );
+        --指定数据环境，Recv封包(去头去尾，txspyline)，解析之
+
+
+
+-------- -------- -------- --------
+             TX TLV
+-------- -------- -------- --------
+
+    TXP.TLVBuilder                      --TLV数据包构建函数组
+    TXP.TLVAnalyzer                     --TLV数据包解析函数组
+    TXP.TLVSpy                          --TLV数据包分解函数组
+    TXP.TLVName                         --TLV名称组
+
+
+
+    string    TXP.CreateTLVSubVerName   ( int tag );
+        --指定TLV的tag，生成"tlv%04Xsubver"，用于查询可能存在的tlv子版本号
+
+
+
+-------- -------- -------- --------
+           TLV脚本组
+-------- -------- -------- --------
+
+    0004                                NonUinAccount
+    0005                                Uin
+    0006                                TGTGT
+    0007                                TGT
+    0008                                TimeZone
+    000A                                ErrorInfo
+    000C                                PingRedirect
+    000D
+    0014
+    0015                                ComputerGuid
+    0017                                ClientInfo
+    0018                                Ping
+    001A                                GTKeyTGTGTCryptedData
+    001E                                GTKey_TGTGT
+    001F                                DeviceID
+    002D                                LocalIP
+    002F
+    0032                                QdData
+    0036                                LoginReason
+    0100                                ErrorCode
+    0102                                Official
+    0103                                SID
+    0105                                m_vec0x12c
+    0107                                TicketInfo
+    0108                                AccountBasicInfo
+    0109                                0xddReply
+    010B                                QDLoginFlag
+    010C
+    010D                                SigLastLoginInfo
+    010E
+    0110                                SigPic
+    0112                                SigIP2
+    0114                                DHParams
+    0115                                PacketMd5
+    0309                                Ping_Strategy
+    030F                                ComputerName
+    0310                                ServerAddress
+    0312                                Misc_Flag
+    0313                                GUID_Ex
+
+

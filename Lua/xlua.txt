@@ -1,0 +1,475 @@
+
+
+-------- -------- -------- --------
+            mem操作
+-------- -------- -------- --------
+
+
+
+●
+    string    readmem         ( void* lpmem, size_t size );
+                                                --读取指定内存位置指定长度数据
+    
+    int       mkb             ( void* lpmem );  --读取有符号byte值，小端
+    int       mkB             ( void* lpmem );  --读取无符号byte值，小端
+    int       mkbb            ( void* lpmem );  --读取有符号byte值，大端
+    int       mkBB            ( void* lpmem );  --读取无符号byte值，大端
+
+    int       mkw             ( void* lpmem );  --读取有符号word值，小端
+    int       mkW             ( void* lpmem );  --读取无符号word值，小端
+    int       mkww            ( void* lpmem );  --读取有符号word值，大端
+    int       mkWW            ( void* lpmem );  --读取无符号word值，大端
+    
+    int       mkd             ( void* lpmem );  --读取有符号dword值，小端
+    int       mkD             ( void* lpmem );  --读取无符号dword值，小端
+    int       mkdd            ( void* lpmem );  --读取有符号dword值，大端
+    int       mkDD            ( void* lpmem );  --读取无符号dword值，大端
+    
+    float     mkf             ( void* lpmem );  --读取float值，小端
+    double    mkF             ( void* lpmem );  --读取double值，小端
+    float     mkff            ( void* lpmem );  --读取float值，大端
+    double    mkFF            ( void* lpmem );  --读取double值，大端
+
+
+
+-------- -------- -------- --------
+            api操作
+-------- -------- -------- --------
+
+
+
+●
+    void      sleep           ( ms ); --暂停线程ms毫秒，ms允许为空
+
+
+
+-------- -------- -------- --------
+                xlog操作
+-------- -------- -------- --------
+
+
+
+●
+    void      xlog            ( ... );  --无条件输出debugview
+
+
+
+●
+    xlog_level;
+        --"off"       --屏蔽输出
+        --"fatal"     --致命错误，程序无法继续执行
+        --"error"     --反映错误，例如一些API的调用失败
+        --"warn"      --反映某些需要注意的可能有潜在危险的情况，可能会造成崩溃或逻辑错误之类
+        --"info"      --表示程序进程的信息
+        --"debug"     --普通的调试信息，这类信息发布时一般不输出
+        --"trace"     --最精细的调试信息，多用于定位错误，查看某些变量的值
+        --"on"        --全输出
+
+
+
+●
+    --根据xlog_level的动态调试等级，决定是否输出信息
+    --函数组底层调用xlog输出信息，修改xlog函数能实现信息转向
+    void      xfail           ( ... );
+    void      xerr            ( ... );
+    void      xwarn           ( ... );
+    void      xinfo           ( ... );
+    void      xdbg            ( ... );
+    void      xtrace          ( ... );
+
+
+
+●
+    --将信息输出函数组加入string表
+    void      stirng:xlog     ( ... );
+    void      stirng:xfail    ( ... );
+    void      string:xerr     ( ... );
+    void      string:xwarn    ( ... );
+    void      string:xinfo    ( ... );
+    void      string:xdbg     ( ... );
+    void      string:xtrace   ( ... );
+
+
+
+-------- -------- -------- --------
+                zlib操作
+-------- -------- -------- --------
+
+
+
+●
+    string    zlib_compress   ( string ); --zlib数据压缩
+    string    zlib_uncompress ( string ); --zlib数据解压缩
+    string    gzip_compress   ( string ); --gzip数据压缩
+    string    gzip_uncompress ( string ); --gzip数据解压缩
+
+
+
+●
+    string    string:zcp      ( );        --zlib数据压缩
+    string    string:zup      ( );        --zlib数据解压缩
+    string    string:gzcp     ( );        --gzip数据压缩
+    string    string:gzup     ( );        --gzip数据解压缩
+
+
+
+-------- -------- -------- --------
+                openssl操作
+-------- -------- -------- --------
+
+
+
+●
+    RsaKey    rsa_open_public_key       ( string filename );
+    RsaKey    rsa_set_public_key        ( string rsakey );
+
+    RsaKey    rsa_open_private_key      ( string filename );
+    RsaKey    rsa_set_private_key       ( string rsakey );
+    
+    string    rsa_public_encrypt        ( string data, RsaKey key );
+    string    rsa_private_encrypt       ( string data, RsaKey key );
+
+    string    rsa_public_decrypt        ( string data, RsaKey key );
+    string    rsa_private_decrypt       ( string data, RsaKey key );
+
+
+
+●
+    RsaKey    rsa.pub.open              ( string filename );
+    RsaKey    rsa.pub.set               ( string rsakey );
+    string    rsa.pub.enc               ( string data, RsaKey key );
+    string    rsa.pub.dec               ( string data, RsaKey key );
+
+    RsaKey    rsa.prv.open              ( string filename );
+    RsaKey    rsa.prv.set               ( string rsakey );
+    string    rsa.prv.enc               ( string data, RsaKey key );
+    string    rsa.prv.dec               ( string data, RsaKey key );
+    
+    string    string:rsa_pub_enc        ( RsaKey key );
+    string    string:rsa_pub_dec        ( RsaKey key );
+    string    string:rsa_prv_enc        ( RsaKey key );
+    string    string:rsa_prv_dec        ( RsaKey key );
+
+
+
+●
+    string    des_encrypt               ( string data, string key );
+    string    des_decrypt               ( string data, string key );
+    
+    string    string:des_enc            ( string key );
+    string    string:des_dec            ( string key );
+
+
+
+●
+    string    base64_encode             ( string data[, boolean newline = false] );
+    string    base64_decode             ( string data[, boolean newline = false] );
+    
+    string    string:b64_enc            ( [boolean newline = false] );
+    string    string:b64_dec            ( [boolean newline = false] );
+
+
+
+-------- -------- -------- --------
+          algorithm操作
+-------- -------- -------- --------
+
+
+
+●
+    int       xrand           ( [int mod = 0] );
+
+
+
+●
+    string    md5             ( string data );
+    string    string:md5      ( );
+
+
+
+●
+    int       crc16           ( string data );
+    int       crc32           ( string data );
+    int       crc64           ( string data );
+
+    int       string:crc16    ( );
+    int       string:crc32    ( );
+    int       string:crc64    ( );
+
+
+
+●
+    string    TeanEncrypt     ( string data, string key );
+    string    TeanDecrypt     ( string data, string key );
+    string    TeanEncipher    ( string data, string key );
+    string    TeanDecipher    ( string data, string key );
+    string    XTeanEncrypt    ( string data, string key );
+    string    XTeanDecrypt    ( string data, string key );
+    
+    string    string:tean_enc ( string key );
+    string    string:tean_dec ( string key );
+    string    string:tea_enc  ( string key );
+    string    string:tea_dec  ( string key );
+    string    string:xtean_enc( string key );
+    string    string:xtean_dec( string key );
+
+
+
+●
+    string    aes_encrypt     ( string data, string key );
+    string    aes_decrypt     ( string data, string key );
+    
+    string    string:aes_enc  ( string key );
+    string    string:aes_dec  ( string key );
+
+
+
+-------- -------- -------- --------
+                hex&str操作
+-------- -------- -------- --------
+
+
+
+●
+    string    str2hexs        (
+                               string str
+                               [,
+                               bool errexit = false,
+                               bool errbreak = false
+                               ]
+                               );
+    string    hex2show        (
+                              string data
+                              [,
+                              int prews = 0,
+                              string code = "u/8/a",
+                              bool isup = true
+                              ]
+                              );
+    string    hex2str         (
+                              string data
+                              [, boolean isup = false]
+                              );
+
+    string    string:str2hexs (
+                              [
+                              bool errexit = false,
+                              bool errbreak = false
+                              ]
+                              );
+    string    string:hex2show (
+                              [
+                              int prews = 0,
+                              string code = "u/8/a",
+                              boolean isup = true
+                              ]
+                              );
+    string    string:hex2str  (
+                              [boolean isup = false]
+                              );
+
+
+
+-------- -------- -------- --------
+                utf8操作
+-------- -------- -------- --------
+
+
+
+●
+    string    utf82ws         ( string utf8 );   --utf8转换为unicode
+    string    ws2utf8         ( string ws );     --unicode转换为utf8
+    string    utf82s          ( string utf8 );   --utf8转换为ascii
+    string    s2utf8          ( string s );      --ascii转换为utf8
+    
+    string    string:utf82ws  ( );
+    string    string:ws2utf8  ( );
+    string    string:utf82s   ( );
+    string    string:s2utf8   ( );
+
+
+
+-------- -------- -------- --------
+                sock操作
+-------- -------- -------- --------
+
+
+
+●
+    UDP       udp_new         ( [string ip = "0.0.0.0", string port = "0"] );
+                              --当ip == "0.0.0.0"且port != "0"时，绑定指定端口
+                              --当ip != "0.0.0.0"时，默认连接指定IP
+        
+    string ip, string port, lua_Integer ip, lua_Integer port = UDP:getsockname();
+
+    string ip, string port, lua_Integer ip, lua_Integer port = UDP:getpeername();
+
+    "UDP"     UDP:type        ( );
+
+    string    UDP:__tostring  ( );
+                              --返回UDP{server/client}:########    local_ip:port >> link_ip:port
+
+    UDP       UDP:settimeout  ( int timeout ); --收发延时，毫秒计
+
+    UDP       UDP:send        (
+                              string data
+                              [,
+                              string ip = "0.0.0.0",
+                              string port = "0"
+                              ]
+                              );
+                              --当不提供ip、port时，默认连接初始化时指定的IP
+        
+    string data, string ip, string port = UDP:recv( [ lua_Integer size = 0x800 ] );
+                              --当不提供size时，默认提供0x800的接收缓冲区
+
+
+
+-------- -------- -------- --------
+                xline操作
+-------- -------- -------- --------
+
+
+
+●
+    xline     xline:new                 ( );
+        --提供xline时，复制xline状态及内容
+        --未提供状态时，默认小端，头大小2 byte，不包含头，不处理结尾0
+        --xline数据项说明：
+          line          数据内容(string)
+          net_flag      数据处理编码(boolean)，true大端 false小端，默认小端
+                        0x1234大端写入，内容为"\x12\x34"，小端写入，内容为"\x34\x12"
+          head_size     数据处理头大小(int)，1byte 2word 4dword，默认2
+                        "AA"作为line写入时，内容为"\x02\x00\x41\x41"
+          head_self     数据处理头是否包含头大小(boolean)
+                        "AA"作为line，且包含头大小写入时，内容为"\x04\x00\x41\x41"
+          deal_zero_end 数据处理结尾0
+                        写入字符串时，额外写入结尾0
+                        读取字符串，额外读出结尾0
+          nets          根据net_flag决定为大端">"或小端"<"
+
+
+
+●
+    xline     xline:newline             ( [string] ); --指定数据内容，初始化为xline
+
+
+
+●
+    VALUES    xline:pick                ( string fmt );
+        --指定读取格式，读取数据并修改处理索引
+
+
+
+    VALUE     xline:get_byte            ( );  --读取一个byte
+    VALUE     xline:get_word            ( );  --读取一个word
+    VALUE     xline:get_dword           ( );  --读取一个dword
+
+
+
+    int head_size, int real_size = xline:get_head ( );
+        --读取数据头，返回数据头值、真实数据头值(减去可能包含的数据头大小)
+
+
+
+    xline     xline:get_line            ( [size] );
+        --读取指定大小数据，生成新的xline，同时复制状态
+        --如果size <= 0或未指定，复制新的xline，原始xline数据内容清除，索引置1
+
+
+
+    xline     xline:get_head_line       ( );
+        --读取带数据头的一组数据
+        --返回生成新的xline，以及数据头原始大小
+
+
+
+    string    xline:get_str             ( [size[, type_size]] );
+        --读取指定长度字符串，以字符串类型大小计
+        --长度未提供时，提取以0结尾的字符串
+        --类型大小未提供时，默认为1，即ascii字符串
+
+
+
+    string    xline:get_ascii_str       ( [size] ); --读取指定长度ascii字符串
+    string    xline:get_unicode_str     ( [size] ); --读取指定长度unicode字符串
+
+
+
+    string    xline:get_head_ascii      ( [size] ); --读取带头的ascii字符串
+    string    xline:get_head_unicode    ( [size] ); --读取带头的unicode字符串
+
+
+
+●
+    xline     xline:clear               ( );        --清除数据内容
+    xline     xline:assign              ( xline );  --从另一xline中读取数据内容
+
+
+
+    xline     xline:push                ( stirng fmt, ... ); --指定写入格式，写入数据
+
+
+
+    xline     xline:set_byte            ( v );      --写入一个byte
+    xline     xline:set_word            ( v );      --写入一个word
+    xline     xline:set_dword           ( v );      --写入一个dword
+
+
+
+    xline     xline:set_head            ( int size );
+        --写入数据头，自动根据状态加入数据头大小
+
+
+
+    xline     xline:set_line            ( xline );  --写入xline的内容
+
+
+
+    xline     xline:set_head_line       ( xline );  --写入带数据头xline内容
+
+
+
+    xline     xline:set_str             ( string str, int type_size );
+        --写入数据内容，自动根据状态加入结尾0
+
+
+
+    xline     xline:set_ascii_str       ( string str ); --写入ascii
+    xline     xline:set_unicode_str     ( string str ); --写入unicode
+
+
+
+    xline     xline:set_head_ascii      ( string str ); --写入带头的ascii
+    xline     xline:set_head_unicode    ( string str ); --写入带头的unicode
+
+
+
+●
+    xline.gb    = xline.get_byte;
+    xline.gw    = xline.get_word;
+    xline.gd    = xline.get_dword;
+    xline.gh    = xline.get_head;
+    xline.gl    = xline.get_line;
+    xline.ghl   = xline.get_head_line;
+    xline.gs    = xline.get_str;
+    xline.ga    = xline.get_ascii_str;
+    xline.gu    = xline.get_unicode_str;
+    xline.gha   = xline.get_head_ascii;
+    xline.ghu   = xline.get_head_unicode;
+
+    xline.cl    = xline.clear;
+    xline.as    = xline.assign;
+
+    xline.sb    = xline.set_byte;
+    xline.sw    = xline.set_word;
+    xline.sd    = xline.set_dword;
+    xline.sh    = xline.set_head;
+    xline.sl    = xline.set_line;
+    xline.shl   = xline.set_head_line;
+    xline.ss    = xline.set_str;
+    xline.sa    = xline.set_ascii_str;
+    xline.su    = xline.set_unicode_str;
+    xline.sha   = xline.set_head_ascii;
+    xline.shu   = xline.set_head_unicode;
+

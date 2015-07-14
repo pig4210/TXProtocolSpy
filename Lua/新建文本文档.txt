@@ -1,0 +1,20 @@
+require "xlua";require "TXProtocol/TXProtocol";xlog=print;
+td=TXP.Data:new_net("123456789", "123");
+pkt=TXP.PacketBuilder[0x0825](td);pkt:hex2show();
+ip, port, dip, wport = td.link:getpeername();
+TXP.PacketSpy(td, ip .. ":"..port, pkt, true);
+td.link:send(pkt);
+buf, ip, port = td.link:recv();buf:hex2show();
+TXP.PacketSpy(td, ip .. ":"..port, buf, false);
+TXP.PacketAnalyzer[0x0825](td, buf);
+td.result
+
+
+pkt=TXP.PacketBuilder[0x0836](td);pkt:hex2show();
+ip, port, dip, wport = td.link:getpeername();
+TXP.PacketSpy(td, ip .. ":"..port, pkt, true);
+td.link:send(pkt);
+buf, ip, port = td.link:recv();buf:hex2show();
+TXP.PacketSpy(td, ip .. ":"..port, buf, false);
+TXP.PacketAnalyzer[0x0825](td, buf);
+td.result
